@@ -4,13 +4,17 @@ import styled from "styled-components";
 // Components
 import Product from "../../Components/Product";
 
+// Data
+import { Products } from "../../Data/Products";
+
 const Home = () => {
   return (
     <Container>
       <Banner></Banner>
       <Content>
-        <Product />
-        <Product />
+        {Products.map((product, index) => {
+          return <Product key={index} product={product} />;
+        })}
       </Content>
     </Container>
   );

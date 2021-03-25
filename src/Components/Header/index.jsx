@@ -6,8 +6,10 @@ import { Link } from "react-router-dom";
 
 // Material-ui Icons
 import SearchIcon from "@material-ui/icons/Search";
-import ShoppingBasketIcon from "@material-ui/icons/ShoppingBasket";
-import LocationOnIcon from "@material-ui/icons/LocationOn";
+import LocationOnIcon from "@material-ui/icons/LocationOnOutlined";
+
+// SVG
+import CartIcon from "../../assets/images/Cart.svg";
 
 const Header = () => {
   return (
@@ -23,15 +25,15 @@ const Header = () => {
           <LocationOnIcon />
         </HeaderOption>
         <HeaderOption>
-          <OptionLineOne>Hello,</OptionLineOne>
-          <OptionLineTwo>Select your address</OptionLineTwo>
+          <OptionLineOne>Deliver to JAMES</OptionLineOne>
+          <OptionLineTwo>Grand Haven 49417</OptionLineTwo>
         </HeaderOption>
       </HeaderOptionAddress>
 
       <HeaderSearch>
         <HeaderSearchInput type="text" />
         <HeaderSearchIconContainer>
-          <SearchIcon />
+          <SearchIcon fontSize="large" />
         </HeaderSearchIconContainer>
       </HeaderSearch>
 
@@ -47,8 +49,9 @@ const Header = () => {
 
         <HeaderOptionCart>
           <Link to="/cart">
-            <ShoppingBasketIcon />
+            <CartIconContainer src={CartIcon} />
             <CartCount>4</CartCount>
+            <CartTitle>Cart</CartTitle>
           </Link>
         </HeaderOptionCart>
       </HeaderNavItems>
@@ -65,6 +68,7 @@ const Container = styled.div`
   align-items: center;
   justify-content: space-between;
   color: white;
+  padding: 2px;
 `;
 
 const HeaderLogo = styled.div`
@@ -124,10 +128,16 @@ const HeaderNavItems = styled.div`
 
 const HeaderOption = styled.div`
   padding: 10px 9px;
+  cursor: pointer;
+
+  :hover {
+    box-shadow: inset 0px 0px 0px 2px white;
+  }
 `;
 
 const HeaderOptionCart = styled.div`
   display: flex;
+  position: relative;
 
   a {
     display: flex;
@@ -136,8 +146,26 @@ const HeaderOptionCart = styled.div`
     color: white;
     text-decoration: none;
   }
+
+  :hover {
+    box-shadow: inset 0px 0px 0px 2px white;
+  }
 `;
 
 const CartCount = styled.div`
+  position: absolute;
+  top: 20%;
+  left: 30%;
+  font-weight: 700;
+  color: #febd69;
+`;
+
+const CartTitle = styled.div`
   padding-left: 4px;
+  font-weight: 700;
+  margin-top: 20px;
+`;
+
+const CartIconContainer = styled.img`
+  height: 35px;
 `;
