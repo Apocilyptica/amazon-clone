@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
+// Material-ui
+import Grid from "@material-ui/core/Grid";
+
 // Components
 import Product from "../../Components/Product";
 
@@ -32,9 +35,17 @@ const Home = ({ setItemsTotal, itemsTotal }) => {
     <Container>
       <Banner />
       <Content>
-        {products.map((data, index) => {
-          return <Product key={index} product={data.product} id={data.id} setItemsTotal={setItemsTotal} itemsTotal={itemsTotal} />;
-        })}
+        <Grid container spacing={3}>
+          {products.map((data, index) => {
+            return (
+              <Grid item xs={index < 2 ? 6 : 4}>
+                <ProductContainer>
+                  <Product key={index} product={data.product} id={data.id} setItemsTotal={setItemsTotal} itemsTotal={itemsTotal} index={index} />
+                </ProductContainer>
+              </Grid>
+            );
+          })}
+        </Grid>
       </Content>
     </Container>
   );
@@ -57,9 +68,16 @@ const Banner = styled.div`
 `;
 
 const Content = styled.div`
-  display: flex;
-  flex-wrap: wrap;
   padding-left: 10px;
   padding-right: 10px;
   margin-top: -350px;
+`;
+
+const ProductContainer = styled.div`
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  border-radius: 5px;
+  box-shadow: 0px 3px 3px -2px rgb(0 0 0 / 20%), 0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%);
 `;

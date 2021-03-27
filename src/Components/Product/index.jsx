@@ -11,7 +11,7 @@ import StarBorderIcon from "@material-ui/icons/StarBorder";
 // Data
 import { db } from "../../Firebase/config";
 
-const Product = ({ product, id, setItemsTotal, itemsTotal }) => {
+const Product = ({ product, id, setItemsTotal, itemsTotal, index }) => {
   const addToCart = () => {
     const cartItem = db.collection("cartItems").doc(id);
     cartItem.get().then((doc) => {
@@ -116,7 +116,7 @@ const Container = styled.div`
   z-index: 100;
   flex: 1;
   padding: 20px;
-  margin: 10px;
+  // margin: 10px;
 
   display: flex;
   flex-direction: column;
