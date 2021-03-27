@@ -1,8 +1,25 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import NumberFormat from "react-number-format";
 
-const CartTotal = ({ cartTotal, itemsTotal, gift, setGift }) => {
+const CartTotal = ({ gift, setGift, cartItems }) => {
+  const getCount = () => {
+    let count = 0;
+    // Loop through all cart items
+    cartItems.forEach((item) => {
+      // add the quantity of the cart item to total
+      count += item.product.quantity;
+    });
+    return count;
+  };
+  const getTotalPrice = () => {
+    let total = 0;
+    cartItems.forEach((item) => {
+      total += item.product.salePrice * item.product.quantity;
+    });
+    return total.toFixed(2);
+  };
+
   const handleChecked = () => {
     if (!gift) {
       setGift(true);
@@ -13,9 +30,9 @@ const CartTotal = ({ cartTotal, itemsTotal, gift, setGift }) => {
   return (
     <Container>
       <TotalContainer>
-        <Title>Subtotal ({itemsTotal} items):</Title>
+        <Title>Subtotal ({getCount()} items):</Title>
         <PriceContainer>
-          <NumberFormat value={cartTotal} displayType={"text"} thousandSeparator={true} prefix={"$"} />
+          <NumberFormat value={getTotalPrice()} displayType={"text"} thousandSeparator={true} prefix={"$"} />
         </PriceContainer>
       </TotalContainer>
       <GiftContainer>

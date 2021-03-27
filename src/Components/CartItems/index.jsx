@@ -10,10 +10,10 @@ const CartItems = ({ cartItems, gift, setGift }) => {
       <Title>Shopping Cart</Title>
       <ItemsContainer>
         {cartItems.map((item, index) => (
-          <>
+          <div key={index}>
             <hr />
-            <CartItem key={index} id={item.id} item={item.product} gift={gift} setGift={setGift} />
-          </>
+            <CartItem id={item.id} item={item.product} gift={gift} setGift={setGift} />
+          </div>
         ))}
       </ItemsContainer>
     </Container>

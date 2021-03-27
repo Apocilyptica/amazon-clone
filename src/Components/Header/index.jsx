@@ -12,7 +12,17 @@ import LocationOnIcon from "@material-ui/icons/LocationOnOutlined";
 // SVG
 import CartIcon from "../../assets/images/Cart.svg";
 
-const Header = ({ itemsTotal }) => {
+const Header = ({ cartItems, user, signOut }) => {
+  const getCount = () => {
+    let count = 0;
+    // Loop through all cart items
+    cartItems.forEach((item) => {
+      // add the quantity of the cart item to total
+      count += item.product.quantity;
+    });
+    return count;
+  };
+
   return (
     <Container>
       <HeaderLogo>
@@ -39,8 +49,8 @@ const Header = ({ itemsTotal }) => {
       </HeaderSearch>
 
       <HeaderNavItems>
-        <HeaderOption>
-          <OptionLineOne>Hello, James</OptionLineOne>
+        <HeaderOption onClick={signOut}>
+          <OptionLineOne>Hello, {user.name}</OptionLineOne>
           <OptionLineTwo>Account & Lists</OptionLineTwo>
         </HeaderOption>
         <HeaderOption>
@@ -51,13 +61,13 @@ const Header = ({ itemsTotal }) => {
         <HeaderOptionCart>
           <Link to="/cart">
             <CartIconContainer src={CartIcon} />
-            {itemsTotal < 10 ? (
+            {getCount() < 10 ? (
               <CartCountA>
-                <NumberFormat value={itemsTotal} displayType={"text"} />
+                <NumberFormat value={getCount()} displayType={"text"} />
               </CartCountA>
             ) : (
               <CartCountB>
-                <NumberFormat value={itemsTotal} displayType={"text"} />
+                <NumberFormat value={getCount()} displayType={"text"} />
               </CartCountB>
             )}
             <CartTitle>Cart</CartTitle>

@@ -32,7 +32,8 @@ const CartItem = ({ id, item, gift, setGift }) => {
     });
   };
 
-  const handleDelete = () => {
+  const handleDelete = (event) => {
+    event.preventDefault();
     const cartItem = db.collection("cartItems").doc(id);
     cartItem.delete();
   };

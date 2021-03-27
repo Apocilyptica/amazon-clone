@@ -6,12 +6,13 @@ import Grid from "@material-ui/core/Grid";
 
 // Components
 import Product from "../../Components/Product";
+import HomeSlider from "../../Components/HomeSlider";
 
 // Data
 // import { Products } from "../../Data/Products";
 import { db } from "../../Firebase/config";
 
-const Home = ({ setItemsTotal, itemsTotal }) => {
+const Home = () => {
   const [products, setProducts] = useState([]);
 
   const getProducts = () => {
@@ -33,14 +34,16 @@ const Home = ({ setItemsTotal, itemsTotal }) => {
 
   return (
     <Container>
-      <Banner />
+      <Banner>
+        <HomeSlider />
+      </Banner>
       <Content>
         <Grid container spacing={3}>
           {products.map((data, index) => {
             return (
-              <Grid item xs={index < 2 ? 6 : 4}>
+              <Grid key={index} item xs={index < 2 ? 6 : 4}>
                 <ProductContainer>
-                  <Product key={index} product={data.product} id={data.id} setItemsTotal={setItemsTotal} itemsTotal={itemsTotal} index={index} />
+                  <Product product={data.product} id={data.id} index={index} />
                 </ProductContainer>
               </Grid>
             );
@@ -59,11 +62,10 @@ const Container = styled.div`
 `;
 
 const Banner = styled.div`
-  background-image: url(https://i.imgur.com/SYHeuYM.jpg);
+  // background-image: url(https://i.imgur.com/SYHeuYM.jpg);
   min-height: 600px;
   background-position: center;
   background-size: cover;
-  z-index: 1;
   mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
 `;
 

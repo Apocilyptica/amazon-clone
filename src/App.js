@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 
 import "./App.css";
 import styled from "styled-components";
@@ -11,13 +12,17 @@ import Cart from "./Components/Cart";
 
 // Pages
 import Home from "./Pages/Home";
+import Login from "./Pages/Login";
+import SignUp from "./Pages/SignUp";
+import ShoppingCart from "./Pages/ShoppingCart";
 
 // Data
-import { db } from "./Firebase/config";
+import { db, auth } from "./Firebase/config";
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
-  const [itemsTotal, setItemsTotal] = useState(0);
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+  const history = useHistory();
 
   const getCartItems = () => {
     db.collection("cartItems").onSnapshot((snapshot) => {
@@ -30,23 +35,47 @@ function App() {
     });
   };
 
+  const signOut = () => {
+    auth.signOut().then(() => {
+      localStorage.removeItem("user");
+      setUser(null);
+    });
+    if (!user) {
+      history.push("/");
+    }
+  };
+
   useEffect(() => {
     getCartItems();
   }, []);
 
   return (
     <Router>
-      <Container>
-        <Header itemsTotal={itemsTotal} />
+      {!user ? (
         <Switch>
-          <Route path="/cart">
-            <Cart cartItems={cartItems} setItemsTotal={setItemsTotal} itemsTotal={itemsTotal} />
+          <Route exact path="/">
+            <Login setUser={setUser} />
           </Route>
-          <Route path="/">
-            <Home setItemsTotal={setItemsTotal} itemsTotal={itemsTotal} />
+          <Route path="/signup">
+            <SignUp setUser={setUser} />
           </Route>
         </Switch>
-      </Container>
+      ) : (
+        <Container>
+          <Header cartItems={cartItems} signOut={signOut} user={user} />
+          <Switch>
+            <Route path="/login">
+              <Login setUser={setUser} />
+            </Route>
+            <Route path="/cart">
+              <Cart cartItems={cartItems} />
+            </Route>
+            <Route path="/">
+              <Home />
+            </Route>
+          </Switch>
+        </Container>
+      )}
     </Router>
   );
 }
