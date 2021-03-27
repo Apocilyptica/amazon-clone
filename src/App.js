@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import "./App.css";
 import styled from "styled-components";
 
@@ -10,17 +12,38 @@ import Cart from "./Components/Cart";
 // Pages
 import Home from "./Pages/Home";
 
+// Data
+import { db } from "./Firebase/config";
+
 function App() {
+  const [cartItems, setCartItems] = useState([]);
+  const [itemsTotal, setItemsTotal] = useState(0);
+
+  const getCartItems = () => {
+    db.collection("cartItems").onSnapshot((snapshot) => {
+      let tempItems = [];
+      tempItems = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        product: doc.data(),
+      }));
+      setCartItems(tempItems);
+    });
+  };
+
+  useEffect(() => {
+    getCartItems();
+  }, []);
+
   return (
     <Router>
       <Container>
-        <Header />
+        <Header itemsTotal={itemsTotal} />
         <Switch>
           <Route path="/cart">
-            <Cart />
+            <Cart cartItems={cartItems} setItemsTotal={setItemsTotal} itemsTotal={itemsTotal} />
           </Route>
           <Route path="/">
-            <Home />
+            <Home setItemsTotal={setItemsTotal} itemsTotal={itemsTotal} />
           </Route>
         </Switch>
       </Container>
@@ -31,6 +54,6 @@ function App() {
 export default App;
 
 const Container = styled.div`
-  height: 100vh;
+  height: 100%;
   background-color: #eaeded;
 `;

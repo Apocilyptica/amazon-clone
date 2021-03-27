@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import NumberFormat from "react-number-format";
 
 // Material-ui
 
@@ -11,7 +12,7 @@ import LocationOnIcon from "@material-ui/icons/LocationOnOutlined";
 // SVG
 import CartIcon from "../../assets/images/Cart.svg";
 
-const Header = () => {
+const Header = ({ itemsTotal }) => {
   return (
     <Container>
       <HeaderLogo>
@@ -50,7 +51,15 @@ const Header = () => {
         <HeaderOptionCart>
           <Link to="/cart">
             <CartIconContainer src={CartIcon} />
-            <CartCount>4</CartCount>
+            {itemsTotal < 10 ? (
+              <CartCountA>
+                <NumberFormat value={itemsTotal} displayType={"text"} />
+              </CartCountA>
+            ) : (
+              <CartCountB>
+                <NumberFormat value={itemsTotal} displayType={"text"} />
+              </CartCountB>
+            )}
             <CartTitle>Cart</CartTitle>
           </Link>
         </HeaderOptionCart>
@@ -152,10 +161,18 @@ const HeaderOptionCart = styled.div`
   }
 `;
 
-const CartCount = styled.div`
+const CartCountA = styled.div`
   position: absolute;
   top: 20%;
-  left: 30%;
+  left: 32%;
+  font-weight: 700;
+  color: #febd69;
+`;
+
+const CartCountB = styled.div`
+  position: absolute;
+  top: 20%;
+  left: 26%;
   font-weight: 700;
   color: #febd69;
 `;

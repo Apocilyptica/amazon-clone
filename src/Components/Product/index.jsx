@@ -1,16 +1,52 @@
 import React from "react";
 import styled from "styled-components";
 import moment from "moment";
+import NumberFormat from "react-number-format";
 
 // Material-ui Icons
 import CheckIcon from "@material-ui/icons/Check";
+import StarIcon from "@material-ui/icons/Star";
+import StarBorderIcon from "@material-ui/icons/StarBorder";
 
-const Product = ({ product }) => {
+// Data
+import { db } from "../../Firebase/config";
+
+const Product = ({ product, id, setItemsTotal, itemsTotal }) => {
+  const addToCart = () => {
+    const cartItem = db.collection("cartItems").doc(id);
+    cartItem.get().then((doc) => {
+      if (doc.exists) {
+        cartItem.update({
+          quantity: doc.data().quantity + 1,
+        });
+        setItemsTotal(Math.abs(itemsTotal + 1));
+      } else {
+        db.collection("cartItems").doc(id).set({
+          name: product.name,
+          image: product.image,
+          price: product.price,
+          salePrice: product.salePrice,
+          isPrime: product.isPrime,
+          details: product.details,
+          quantity: 1,
+        });
+      }
+    });
+  };
+
   return (
     <Container>
-      <Title>{product.title}</Title>
+      <Title>{product.name}</Title>
       <PriceContainer>
-        <Price>{product.price}</Price>
+        {product.price !== 0 ? (
+          <Price>
+            <NumberFormat value={product.price} displayType={"text"} thousandSeparator={true} prefix={"$"} />
+          </Price>
+        ) : (
+          <SalePrice>
+            <NumberFormat value={product.salePrice} displayType={"text"} thousandSeparator={true} prefix={"$"} />
+          </SalePrice>
+        )}
         {product.isPrime ? (
           <PrimeContainer>
             <CheckIcon color="inherit" />
@@ -19,7 +55,12 @@ const Product = ({ product }) => {
         ) : null}
       </PriceContainer>
       <PriceContainer>
-        <SalePrice>{product.salePrice}</SalePrice>
+        {product.price !== 0 ? (
+          <SalePrice>
+            <NumberFormat value={product.salePrice} displayType={"text"} thousandSeparator={true} prefix={"$"} />
+          </SalePrice>
+        ) : null}
+
         {product.isPrime ? (
           <PrimeContainer>
             <PrimeShippingContainer>
@@ -29,26 +70,40 @@ const Product = ({ product }) => {
         ) : null}
       </PriceContainer>
       <RatingContainer>
-        <Rating>⭐⭐⭐⭐⭐</Rating>
-        <Ratings>{product.ratings}</Ratings>
+        <Rating>
+          {Array(product.rating)
+            .fill()
+            .map((rating, index) => (
+              <p key={index}>
+                <StarIcon />
+              </p>
+            ))}
+          {Array(Math.abs(5 - product.rating))
+            .fill()
+            .map((rating, index) => (
+              <p key={index}>
+                <StarBorderIcon />
+              </p>
+            ))}
+        </Rating>
+        <Ratings>
+          <NumberFormat value={product.ratings} displayType={"text"} thousandSeparator={true} />
+        </Ratings>
       </RatingContainer>
       <Image src={product.image} />
       <br />
-      <ProductDetailsContainer>
-        Display Size:<ProductDetails>{product.displaySize}</ProductDetails>
-      </ProductDetailsContainer>
-      <ProductDetailsContainer>
-        Disk Size:<ProductDetails>{product.diskSize}</ProductDetails>
-      </ProductDetailsContainer>
-      <ProductDetailsContainer>
-        Connectivity:<ProductDetails>{product.connectivity}</ProductDetails>
-      </ProductDetailsContainer>
-      <ProductDetailsContainer>
-        Brand:<ProductDetails>{product.brand}</ProductDetails>
-      </ProductDetailsContainer>
+      {product.details.map((detail, index) => {
+        let detailTitle = /[^:]*/;
+        let detailDesc = detail.substr(detail.indexOf(":") + 1);
+        return (
+          <ProductDetailsContainer key={index}>
+            {detail.match(detailTitle)}:<ProductDetails>{detailDesc}</ProductDetails>
+          </ProductDetailsContainer>
+        );
+      })}
       <br />
       <ActionSection>
-        <AddToCartButton>Add to Cart</AddToCartButton>
+        <AddToCartButton onClick={addToCart}>Add to Cart</AddToCartButton>
       </ActionSection>
     </Container>
   );
@@ -62,7 +117,7 @@ const Container = styled.div`
   flex: 1;
   padding: 20px;
   margin: 10px;
-  max-height: 500px;
+
   display: flex;
   flex-direction: column;
 `;
@@ -80,7 +135,10 @@ const SalePrice = styled.span`
   font-weight: 500;
 `;
 
-const Rating = styled.div``;
+const Rating = styled.div`
+  display: flex;
+  color: #f0c14b;
+`;
 
 const Image = styled.img`
   max-height: 200px;
@@ -93,6 +151,7 @@ const AddToCartButton = styled.button`
   background-color: #f0c14b;
   border: 2px solid #a88734;
   border-radius: 2px;
+  cursor: pointer;
 `;
 
 const ActionSection = styled.div`
@@ -127,6 +186,9 @@ const PriceContainer = styled.div`
 const PrimeContainer = styled.div`
   display: flex;
   color: #f0c14b;
+  align-items: center;
+  flex: 1;
+  justify-content: flex-end;
 `;
 
 const Prime = styled.div`

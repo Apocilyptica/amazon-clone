@@ -1,19 +1,39 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 // Components
 import Product from "../../Components/Product";
 
 // Data
-import { Products } from "../../Data/Products";
+// import { Products } from "../../Data/Products";
+import { db } from "../../Firebase/config";
 
-const Home = () => {
+const Home = ({ setItemsTotal, itemsTotal }) => {
+  const [products, setProducts] = useState([]);
+
+  const getProducts = () => {
+    db.collection("products").onSnapshot((snapshot) => {
+      let tempProducts = [];
+
+      tempProducts = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        product: doc.data(),
+      }));
+
+      setProducts(tempProducts);
+    });
+  };
+
+  useEffect(() => {
+    getProducts();
+  }, []);
+
   return (
     <Container>
-      <Banner></Banner>
+      <Banner />
       <Content>
-        {Products.map((product, index) => {
-          return <Product key={index} product={product} />;
+        {products.map((data, index) => {
+          return <Product key={index} product={data.product} id={data.id} setItemsTotal={setItemsTotal} itemsTotal={itemsTotal} />;
         })}
       </Content>
     </Container>
@@ -38,6 +58,7 @@ const Banner = styled.div`
 
 const Content = styled.div`
   display: flex;
+  flex-wrap: wrap;
   padding-left: 10px;
   padding-right: 10px;
   margin-top: -350px;
