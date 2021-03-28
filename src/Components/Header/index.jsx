@@ -12,7 +12,7 @@ import LocationOnIcon from "@material-ui/icons/LocationOnOutlined";
 // SVG
 import CartIcon from "../../assets/images/Cart.svg";
 
-const Header = ({ cartItems, user, signOut }) => {
+const Header = ({ cartItems, user, signOut, id }) => {
   const getCount = () => {
     let count = 0;
     // Loop through all cart items
@@ -24,7 +24,7 @@ const Header = ({ cartItems, user, signOut }) => {
   };
 
   return (
-    <Container>
+    <Container id={id}>
       <HeaderLogo>
         <Link to="/">
           <img src={"https://mikekitko.com/wp-content/uploads/2019/10/amazon-logo-white-768x232.png"} alt="Logo" />

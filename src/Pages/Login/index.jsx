@@ -137,11 +137,11 @@ const Login = ({ setUser }) => {
             <LoginButton onClick={handleGoogleSignIn}>Sign in with Google</LoginButton>
             <Grid container>
               <Grid item xs>
-                <FormControlContainer>
+                {/* <FormControlContainer>
                   <Link href="/recovery" variant="body2">
                     Forgot password?
                   </Link>
-                </FormControlContainer>
+                </FormControlContainer> */}
               </Grid>
               <Grid item>
                 <Link href="/signup" variant="body2">

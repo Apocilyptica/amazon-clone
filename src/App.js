@@ -1,10 +1,21 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import "./App.css";
 import styled from "styled-components";
 
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Switch, Route, withRouter } from "react-router-dom";
+
+// Material-ui
+import Fab from "@material-ui/core/Fab";
+import useScrollTrigger from "@material-ui/core/useScrollTrigger";
+import Zoom from "@material-ui/core/Zoom";
+
+// Material-ui Styles
+import { makeStyles } from "@material-ui/core/styles";
+
+// Material-ui Icons
+import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 
 // Components
 import Header from "./Components/Header";
@@ -19,10 +30,46 @@ import ShoppingCart from "./Pages/ShoppingCart";
 // Data
 import { db, auth } from "./Firebase/config";
 
-function App() {
+const useStyles = makeStyles((theme) => ({
+  fab: {
+    position: "fixed",
+    bottom: theme.spacing(2),
+    right: theme.spacing(2),
+    zIndex: 2,
+  },
+}));
+
+const ScrollTop = (props) => {
+  const { children } = props;
+  const classes = useStyles();
+
+  const trigger = useScrollTrigger({
+    disableHysteresis: true,
+    threshold: 100,
+  });
+
+  const handleClick = (event) => {
+    const anchor = document.querySelector("#back-to-top-anchor");
+
+    if (anchor) {
+      anchor.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  };
+
+  return (
+    <Zoom in={trigger}>
+      <div onClick={handleClick} role="presentation" className={classes.root}>
+        {children}
+      </div>
+    </Zoom>
+  );
+};
+
+function App(props) {
   const [cartItems, setCartItems] = useState([]);
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
   const history = useHistory();
+  const classes = useStyles();
 
   const getCartItems = () => {
     db.collection("cartItems").onSnapshot((snapshot) => {
@@ -39,10 +86,8 @@ function App() {
     auth.signOut().then(() => {
       localStorage.removeItem("user");
       setUser(null);
-    });
-    if (!user) {
       history.push("/");
-    }
+    });
   };
 
   useEffect(() => {
@@ -50,7 +95,7 @@ function App() {
   }, []);
 
   return (
-    <Router>
+    <div>
       {!user ? (
         <Switch>
           <Route exact path="/">
@@ -62,7 +107,7 @@ function App() {
         </Switch>
       ) : (
         <Container>
-          <Header cartItems={cartItems} signOut={signOut} user={user} />
+          <Header cartItems={cartItems} signOut={signOut} user={user} id="back-to-top-anchor" />
           <Switch>
             <Route path="/login">
               <Login setUser={setUser} />
@@ -74,13 +119,18 @@ function App() {
               <Home />
             </Route>
           </Switch>
+          <ScrollTop {...props}>
+            <Fab className={classes.fab} color="primary" size="small" aria-label="scroll back to top">
+              <KeyboardArrowUpIcon />
+            </Fab>
+          </ScrollTop>
         </Container>
       )}
-    </Router>
+    </div>
   );
 }
 
-export default App;
+export default withRouter(App);
 
 const Container = styled.div`
   height: 100%;
