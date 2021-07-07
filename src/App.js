@@ -25,6 +25,7 @@ import Cart from "./Components/Cart";
 import Home from "./Pages/Home";
 import Login from "./Pages/Login";
 import SignUp from "./Pages/SignUp";
+import GoogleMap from "./Pages/GoogleMap";
 import ShoppingCart from "./Pages/ShoppingCart";
 
 // Data
@@ -90,6 +91,8 @@ function App(props) {
     });
   };
 
+  // const data = await axios.get('https://ipinfo.io?token=99ed3500d2cd42)
+
   useEffect(() => {
     getCartItems();
   }, []);
@@ -115,9 +118,12 @@ function App(props) {
             <Route path="/cart">
               <Cart cartItems={cartItems} />
             </Route>
-            <Route path="/">
+            <Route exact path="/">
               <Home />
             </Route>
+            {/* <Route path="/googlemap">
+              <GoogleMap />
+            </Route> */}
           </Switch>
           <ScrollTop {...props}>
             <Fab className={classes.fab} color="primary" size="small" aria-label="scroll back to top">

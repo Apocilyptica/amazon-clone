@@ -8,6 +8,7 @@ import NumberFormat from "react-number-format";
 // Material-ui Icons
 import SearchIcon from "@material-ui/icons/Search";
 import LocationOnIcon from "@material-ui/icons/LocationOnOutlined";
+import BuildIcon from "@material-ui/icons/Build";
 
 // SVG
 import CartIcon from "../../assets/images/Cart.svg";
@@ -35,10 +36,14 @@ const Header = ({ cartItems, user, signOut, id }) => {
         <HeaderOption>
           <LocationOnIcon />
         </HeaderOption>
-        <HeaderOption>
-          <OptionLineOne>Deliver to JAMES</OptionLineOne>
-          <OptionLineTwo>Grand Haven 49417</OptionLineTwo>
-        </HeaderOption>
+        <Link to="/googlemap">
+          <HeaderOption>
+            <OptionLineOne>Deliver to {user.name}</OptionLineOne>
+            <OptionLineTwo>
+              Address Still in <BuildIcon />{" "}
+            </OptionLineTwo>
+          </HeaderOption>
+        </Link>
       </HeaderOptionAddress>
 
       <HeaderSearch>
@@ -148,6 +153,7 @@ const HeaderNavItems = styled.div`
 const HeaderOption = styled.div`
   padding: 10px 9px;
   cursor: pointer;
+  color: white;
 
   :hover {
     box-shadow: inset 0px 0px 0px 2px white;
